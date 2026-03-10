@@ -1,4 +1,5 @@
 const express = require('express');
+const mysql = require('mysql2');
 const app = express();
 
 const PORT = 8000;
@@ -27,36 +28,42 @@ app.post("/createUser", (req, res) => {
         });
         return;
     }
-    console.log("mail ->", email, "password -->",  password);
-    
-    res.send("hereglech uusle");
-})
+
+    const query = "INSERT INTO users (email, password) VALUES (?, ?)";
+
+    db.query(query, [email, password], (err, result) => {
+        if(err){
+            console.log(err);
+            res.status(500).send("datand aldaa garlaa");
+            return;
+        }
+
+        res.send({
+            message: "hereglech amjilttai uuslee",
+            success: true
+        });
+    });
+});
 
 app.get("/getUser", (req, res) => {
-    const {email, password, matchPassword} = req.query;
+    const {email} = req.query;
 
-    if(password === matchPassword) {
-        res.send({ message: "password taarahgui baina"});
-    }
+    const query = "SELECT * FROM users WHERE email = ?";
 
-    if(email == undefined)  {
-        res.status(400).send({
-            message: "email oldsongui",
-            success: false
-        });
-        return;
-    }
+    db.query(query, [email], (err, result) => {
+        if(err){
+            res.status(500).send("datand aldaa garlaa");
+            return;
+        }
 
-    if(email === "temvjin@gmail.com"){ 
-        res.send({ message: "medeelel irlee",email: email, name: "Temvjin", age: 25});
-        return;
-    } else {
-        res.status(400).send("amjiltgui");
-    }
-    console.log("mail ->", email);
-    
-    res.send({ message: "hereglechiin medeelel amjilltai irle",email: email});
-})
+        if(result.length === 0){
+            res.status(404).send("user oldsongui");
+            return;
+        }
+
+        res.send(result[0]);
+    });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
