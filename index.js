@@ -3,7 +3,19 @@ const mysql = require('mysql2');
 const app = express();
 
 const PORT = 8000;
-
+const db = new mysql.createConnection({
+    host : "localhost",
+    password : "admin123",
+    user : "root",
+    database : "duguilan_mn"
+});
+db.connect((err) =>{
+    if(err){
+        console.log("Database holbogdsongu")
+    }else {
+        console.log("Database holbogdlo")
+    }
+});
 app.use(express.json());
 
 app.get('/', (req, res) => {
