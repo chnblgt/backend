@@ -1,17 +1,18 @@
 const mysql = require('mysql2');
 
-const db = new mysql.createConnection({
-    host : "localhost",
-    password : "admin123",
-    user : "root",
-    database : "duguilan_platform"
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "admin123",
+    database: "duguilan_platform"
 });
-db.connect((err) =>{
-    if(err){
-        console.log("Database holbogdsongu")
-    }else {
-        console.log("Database holbogdlo")
+
+db.connect((err) => {
+    if (err) {
+        console.log("Database холбогдсонгүй:", err.message);
+    } else {
+        console.log("Database холбогдлоо ✓");
     }
 });
 
-module.exports(db);
+module.exports = db;
